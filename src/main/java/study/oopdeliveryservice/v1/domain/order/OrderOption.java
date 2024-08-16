@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.oopdeliveryservice.v1.domain.generic.money.Money;
+import study.oopdeliveryservice.v1.domain.shop.OptionSpecification;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,5 +53,9 @@ public class OrderOption {
 
     public void addOrderOptionGroup(OrderOptionGroup orderOptionGroup) {
         this.orderOptionGroup = orderOptionGroup;
+    }
+
+    public boolean isSatisfiedBy(OptionSpecification optionSpecification) {
+        return name.equals(optionSpecification.getName()) && price.equals(optionSpecification.getPrice());
     }
 }

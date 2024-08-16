@@ -18,6 +18,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.oopdeliveryservice.v1.domain.generic.money.Money;
+import study.oopdeliveryservice.v1.domain.order.OrderOptionGroup;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -64,5 +66,27 @@ public class Menu {
     public void addShop(Shop shop) {
         this.shop = shop;
         shop.addMenu(this);
+    }
+
+    public Money getBasePrice() {
+        return getBasicOptionGroupSpecs().getOptionSpecs().get(0).getPrice();
+    }
+
+    private OptionGroupSpecification getBasicOptionGroupSpecs() {
+        return optionGroupSpecs
+            .stream()
+            .filter(OptionGroupSpecification::isBasic)
+            .findFirst()
+            .orElseThrow(IllegalStateException::new);
+    }
+
+    public void validateOrder(String menuName, List<OrderOptionGroup> orderOptionGroups) {
+        if (!this.name.equals(menuName)) {
+            throw new IllegalArgumentException("기본 상품이 변경되었습니다.");
+        }
+    }
+
+    private boolean isSatisfiedBy(OrderOptionGroup group) {
+        return optionGroupSpecs.stream().anyMatch(spec -> spec.isSatisfiedBy(group));
     }
 }

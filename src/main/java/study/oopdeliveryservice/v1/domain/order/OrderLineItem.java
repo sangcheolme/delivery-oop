@@ -75,4 +75,9 @@ public class OrderLineItem {
     public void addOrder(Order order) {
         this.order = order;
     }
+
+    public void validate() {
+        // 메뉴의 이름과 주문항목의 이름 비교
+        menu.validateOrder(name, orderOptionGroups);
+    }
 }

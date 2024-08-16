@@ -20,6 +20,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.oopdeliveryservice.v1.domain.order.OrderOption;
+import study.oopdeliveryservice.v1.domain.order.OrderOptionGroup;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -75,5 +77,22 @@ public class OptionGroupSpecification {
 
     public void addMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    public boolean isSatisfiedBy(OrderOptionGroup optionGroup) {
+        return !isSatisfied(optionGroup.getName(), satisfied(optionGroup.getOrderOptions()));
+    }
+
+    private boolean isSatisfied(String groupName, List<OptionSpecification> satisfied) {
+        return name.equals(groupName) &&
+            !satisfied.isEmpty() &&
+            (!exclusive || satisfied.size() == 1);
+    }
+
+    private List<OptionSpecification> satisfied(List<OrderOption> orderOptions) {
+        return orderOptions
+            .stream()
+            .flatMap(spec -> optionSpecs.stream().filter(spec::isSatisfiedBy))
+            .toList();
     }
 }
